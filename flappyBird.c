@@ -8,6 +8,10 @@
 #define BRID 'o'
 #define birdW 3
 #define birdH 2
+
+#define PIPE_WIDTH 0.1f
+#define PIPE_GAP 0.3f 
+
 #define dt 30000
 const char brid[birdH][birdW] = {{'o', 'o', 'o'},
                                  {'o', 'o', 'o'}};
@@ -22,7 +26,6 @@ void drawBird(float birdX, float birdY)
             mvaddch(y + birdY, x + birdX, brid[y][x]);
         }
     }
-    refresh();
 }
 
 int checkForCollision(int birdX, int birdY)
@@ -49,7 +52,40 @@ void drawWalls()
         mvaddch(0, i, WALL);
         mvaddch(LINES - 1, i, WALL);
     }
-    refresh();
+}
+void drawPipe(int xCoord, int height, int isTopPipe)
+{
+    for(int i = xCoord; i < xCoord + PIPE_WIDTH*COLS && i < COLS; i++)
+    {
+        if(isTopPipe)
+        {
+            for(int j = 0; j < height; j++)
+            {
+                mvaddch(j, i, PIPE);
+            }
+        }    
+        else
+        {
+            for(int j = LINES - 1; j > LINES - height; j--)
+            {
+                mvaddch(j, i, PIPE);
+            }
+        }
+    }        
+}
+
+void drawSimplePipes(float distanceSinceStart)
+{
+    //simple algorithm
+    //pipes are spaced evenly from one another
+    if(distanceSinceStart < 0){return;}
+    float distanceBetweenPipes = COLS/2;
+    int nPipe = distanceSinceStart/distanceBetweenPipes;
+    for(int x = nPipe; x < nPipe + COLS/distanceBetweenPipes; x++) 
+    {
+        drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2 - (int)(PIPE_GAP*LINES), 1);
+        drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2, 0);
+    }
 }
 
 void drawGameOver()
@@ -58,6 +94,15 @@ void drawGameOver()
     mvaddstr(LINES/2 + 1, COLS/2, "press space to restart game");
     refresh();
 }
+
+void drawTitleScreen()
+{
+    mvaddstr(LINES/2, COLS/2, "flappy");
+    mvaddstr(LINES/2 + 1, COLS/2, "bird");
+
+    mvaddstr(LINES - 1, 0, "press space to start, q to quit");
+}
+
 int main()
 {
     //initialise the screen
@@ -68,17 +113,13 @@ int main()
     nodelay(stdscr, TRUE);
     int startGame = 0;
     const float g = 2*LINES;
-    const float birdVJump = -sqrt(2*g*LINES/3); 
-    float birdX, birdY, birdVY;
+    const float birdVJump = -sqrt(2*g*LINES/5); 
+    float birdX, birdY, birdVY, birdVX, distanceSinceStart;
     struct timeval thisFrame, previousFrame;
     while(1)
     {
         clear();
-        //set the title screen
-        mvaddstr(LINES/2, COLS/2, "flappy");
-        mvaddstr(LINES/2 + 1, COLS/2, "bird");
-
-        mvaddstr(LINES - 1, 0, "press space to start, q to quit");
+        drawTitleScreen();
         char c = getch();
         if(c == 'q')
         {
@@ -86,16 +127,20 @@ int main()
         }
         else if(c == ' ')
         {
+            //start game
             startGame = 1;
             birdX = COLS/4;
             birdY = LINES/2;
             birdVY = 0;
+            birdVX = COLS/4;
+            distanceSinceStart = -2*COLS;
             gettimeofday(&previousFrame, NULL);
         }
         while(startGame)
         {
             clear();
             drawWalls();
+            drawSimplePipes(distanceSinceStart);
 
             //update position of brid and pipes
             c = getch();
@@ -109,8 +154,9 @@ int main()
             timeElapsed /= 1000000;
             previousFrame = thisFrame;
             
-            birdVY += g*(float)timeElapsed;
-            birdY += birdVY*(float)timeElapsed;
+            birdVY += g*timeElapsed;
+            birdY += birdVY*timeElapsed;
+            distanceSinceStart += timeElapsed*birdVX;
 
             if(checkForCollision(birdX, birdY) == 1)
             {
