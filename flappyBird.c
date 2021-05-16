@@ -75,6 +75,7 @@ void drawPipe(int xCoord, int height, int isTopPipe)
     }        
 }
 
+
 void drawSimplePipes(float distanceSinceStart)
 {
     //simple algorithm
