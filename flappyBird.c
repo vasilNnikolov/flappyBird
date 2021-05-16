@@ -30,6 +30,7 @@ void drawBird(float birdX, float birdY)
 
 int checkForCollision(int birdX, int birdY)
 {
+    if(birdX < 0 || birdX > LINES){return 1;}
     for(int y = 0; y < birdH; y++)
     {
         for(int x = 0; x < birdW; x++)
@@ -55,7 +56,7 @@ void drawWalls()
 }
 void drawPipe(int xCoord, int height, int isTopPipe)
 {
-    for(int i = xCoord; i < xCoord + PIPE_WIDTH*COLS && i < COLS; i++)
+    for(int i = (0 > xCoord) ? 0 : xCoord; i < xCoord + PIPE_WIDTH*COLS && i < COLS; i++)
     {
         if(isTopPipe)
         {
@@ -81,7 +82,7 @@ void drawSimplePipes(float distanceSinceStart)
     if(distanceSinceStart < 0){return;}
     float distanceBetweenPipes = COLS/2;
     int nPipe = distanceSinceStart/distanceBetweenPipes;
-    for(int x = nPipe; x < nPipe + COLS/distanceBetweenPipes; x++) 
+    for(int x = nPipe - 1; x < nPipe + COLS/distanceBetweenPipes + 1; x++) 
     {
         drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2 - (int)(PIPE_GAP*LINES), 1);
         drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2, 0);
