@@ -14,10 +14,10 @@ int main()
     nodelay(stdscr, TRUE);
     
     int startGame = 0;
-    const float g = 2*LINES;
-    const float birdVJump = -sqrt(2*g*LINES/5); 
+    const float g = 3*LINES;
+    const float birdVJump = -sqrt(2*g*LINES/7); 
     float distanceSinceStart;
-    struct Bird bird;
+    Bird bird;
     struct timeval thisFrame, previousFrame;
     while(1)
     {
@@ -35,7 +35,7 @@ int main()
             bird.birdX = COLS/4;
             bird.birdY = LINES/2;
             bird.birdVY = 0;
-            bird.birdVX = COLS/4;
+            bird.birdVX = COLS/6;
 
             for(int h = 0; h < birdH; h++)
             {
@@ -44,7 +44,7 @@ int main()
                     bird.bird[h][w] = 'o';
                 }
             }
-            distanceSinceStart = -2*COLS;
+            distanceSinceStart = 0;
             gettimeofday(&previousFrame, NULL);
         }
         while(startGame)
@@ -87,7 +87,8 @@ int main()
             drawBird(bird);
             refresh();
             //wait for next frame
-            usleep(dt - (int)timeElapsed*1000000);
+            int timeLeft = dt - (int)timeElapsed*1000000;
+            if(timeLeft > 0){usleep(timeLeft);}
         }
         refresh();
         usleep(dt);

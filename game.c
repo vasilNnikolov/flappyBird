@@ -22,13 +22,15 @@ void drawSimplePipes(float distanceSinceStart)
 {
     //simple algorithm
     //pipes are spaced evenly from one another
-    if(distanceSinceStart < 0){return;}
-    float distanceBetweenPipes = COLS/2;
-    int nPipe = distanceSinceStart/distanceBetweenPipes;
-    for(int x = nPipe - 1; x < nPipe + COLS/distanceBetweenPipes + 1; x++) 
+    float distanceBetweenPipes = COLS/3;
+    int firstPipeDistance = 1*COLS;
+    if(distanceSinceStart + COLS < firstPipeDistance){return;}
+    int backIndex = (distanceSinceStart - PIPE_WIDTH*COLS - firstPipeDistance)/distanceBetweenPipes;
+    int frontIndex = (distanceSinceStart + COLS - firstPipeDistance)/distanceBetweenPipes;
+    for(int i = (backIndex > 0 ? backIndex : 0); i <= frontIndex; i++)
     {
-        drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2 - (int)(PIPE_GAP*LINES), 1);
-        drawPipe(x*distanceBetweenPipes - distanceSinceStart, LINES/2, 0);
+        drawPipe(firstPipeDistance + i*distanceBetweenPipes - distanceSinceStart, LINES/2, 1);
+        drawPipe(firstPipeDistance + i*distanceBetweenPipes - distanceSinceStart, (int)(LINES*(0.5 - PIPE_GAP)), 0);
     }
 }
 
@@ -42,6 +44,7 @@ void drawBird(Bird bird)
         }
     }
 }
+
 
 void drawWalls()
 {
