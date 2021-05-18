@@ -14,10 +14,26 @@ int main()
     nodelay(stdscr, TRUE);
     
     int startGame = 0;
+
+    //physics parameters
     const float g = 3*LINES;
     const float birdVJump = -sqrt(2*g*LINES/7); 
     float distanceSinceStart;
+
     Bird bird;
+
+    //initialise map parameters
+    Map map;
+    
+    map.distanceBetweenPipes = COLS/3;
+    map.finalDifficultyDistance = 10*COLS;
+    map.firstPipeDistance = 1.5*COLS;
+    map.maxHeightDifference = LINES/2;
+    int heights[10]; //an array of the heights of the pipes visible on the screen, with a bit of overflow
+    for(int i = 0; i < sizeof(heights)/sizeof(heights[0]); i++)
+    {
+        heights[i] = -1;
+    }
     struct timeval thisFrame, previousFrame;
     while(1)
     {
@@ -36,6 +52,7 @@ int main()
             bird.birdY = LINES/2;
             bird.birdVY = 0;
             bird.birdVX = COLS/6;
+            lastHeight = LINES/2;
 
             for(int h = 0; h < birdH; h++)
             {
@@ -51,7 +68,9 @@ int main()
         {
             clear();
             drawWalls();
-            drawSimplePipes(distanceSinceStart);
+            //drawSimplePipes(distanceSinceStart);
+            //draw more complex pipes
+            drawBetterPipes(distanceSinceStart, &lastHeight);
 
             //update position of brid and pipes
             c = getch();

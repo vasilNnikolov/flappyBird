@@ -1,9 +1,10 @@
 #include <ncurses.h>
+#include <stdlib.h>
 #include "game.h"
 
 int checkForCollision(Bird bird)
 {
-    if(bird.birdX < 0 || bird.birdX > LINES){return 1;}
+    if(bird.birdY < 0 || bird.birdY > LINES){return 1;}
     for(int y = 0; y < birdH; y++)
     {
         for(int x = 0; x < birdW; x++)
@@ -31,6 +32,19 @@ void drawSimplePipes(float distanceSinceStart)
     {
         drawPipe(firstPipeDistance + i*distanceBetweenPipes - distanceSinceStart, LINES/2, 1);
         drawPipe(firstPipeDistance + i*distanceBetweenPipes - distanceSinceStart, (int)(LINES*(0.5 - PIPE_GAP)), 0);
+    }
+}
+
+void drawBetterPipes(Map map, float distanceSinceStart)
+{
+    float progress = distanceSinceStart/(float)map.finalDifficultyDistance;
+    if(progress > 1){progress = 1;}
+    int backIndex = (distanceSinceStart - PIPE_WIDTH*COLS - map.firstPipeDistance)/(float)map.distanceBetweenPipes;
+    int frontIndex = (distanceSinceStart + COLS - map.firstPipeDistance)/(float)map.distanceBetweenPipes;
+    
+    for(int i = (backIndex > 0 ? backIndex : 0); i <= frontIndex; i++)
+    {
+
     }
 }
 
