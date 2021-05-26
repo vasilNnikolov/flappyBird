@@ -37,14 +37,16 @@ void drawSimplePipes(float distanceSinceStart)
 
 void drawBetterPipes(Map map, float distanceSinceStart)
 {
-    float progress = distanceSinceStart/(float)map.finalDifficultyDistance;
-    if(progress > 1){progress = 1;}
     int backIndex = (distanceSinceStart - PIPE_WIDTH*COLS - map.firstPipeDistance)/(float)map.distanceBetweenPipes;
     int frontIndex = (distanceSinceStart + COLS - map.firstPipeDistance)/(float)map.distanceBetweenPipes;
-    
+    int h; 
     for(int i = (backIndex > 0 ? backIndex : 0); i <= frontIndex; i++)
     {
-
+        //compute random height
+        srand(i + map.seed);
+        h = (int)(0.1*LINES + (rand()/(float)RAND_MAX)*(0.9 - PIPE_GAP)*LINES);
+        drawPipe(map.firstPipeDistance+ i*map.distanceBetweenPipes - distanceSinceStart, h, 0);
+        drawPipe(map.firstPipeDistance+ i*map.distanceBetweenPipes - distanceSinceStart, LINES - h - PIPE_GAP*LINES, 1);
     }
 }
 

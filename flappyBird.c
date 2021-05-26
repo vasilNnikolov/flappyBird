@@ -29,6 +29,7 @@ int main()
     map.finalDifficultyDistance = 10*COLS;
     map.firstPipeDistance = 1.5*COLS;
     map.maxHeightDifference = LINES/2;
+    map.seed = 1000;
     int heights[10]; //an array of the heights of the pipes visible on the screen, with a bit of overflow
     for(int i = 0; i < sizeof(heights)/sizeof(heights[0]); i++)
     {
@@ -52,7 +53,6 @@ int main()
             bird.birdY = LINES/2;
             bird.birdVY = 0;
             bird.birdVX = COLS/6;
-            lastHeight = LINES/2;
 
             for(int h = 0; h < birdH; h++)
             {
@@ -70,7 +70,7 @@ int main()
             drawWalls();
             //drawSimplePipes(distanceSinceStart);
             //draw more complex pipes
-            drawBetterPipes(distanceSinceStart, &lastHeight);
+            drawBetterPipes(map, distanceSinceStart);
 
             //update position of brid and pipes
             c = getch();
