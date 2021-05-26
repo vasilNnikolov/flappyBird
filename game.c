@@ -44,7 +44,7 @@ void drawBetterPipes(Map map, float distanceSinceStart)
     {
         //compute random height
         srand(i + map.seed);
-        h = (int)(0.1*LINES + (rand()/(float)RAND_MAX)*(0.9 - PIPE_GAP)*LINES);
+        h = (rand()/(float)RAND_MAX)*(float)(0.8 - PIPE_GAP)*LINES + 0.1*LINES;  
         drawPipe(map.firstPipeDistance+ i*map.distanceBetweenPipes - distanceSinceStart, h, 0);
         drawPipe(map.firstPipeDistance+ i*map.distanceBetweenPipes - distanceSinceStart, LINES - h - PIPE_GAP*LINES, 1);
     }

@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <sys/time.h>
 #include <math.h>
+#include <stdlib.h>
 #include "game.h"
 
 int main()
@@ -29,7 +30,7 @@ int main()
     map.finalDifficultyDistance = 10*COLS;
     map.firstPipeDistance = 1.5*COLS;
     map.maxHeightDifference = LINES/2;
-    map.seed = 1000;
+    map.seed = rand();
     int heights[10]; //an array of the heights of the pipes visible on the screen, with a bit of overflow
     for(int i = 0; i < sizeof(heights)/sizeof(heights[0]); i++)
     {
